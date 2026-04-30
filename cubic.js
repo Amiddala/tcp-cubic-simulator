@@ -11,6 +11,10 @@ let tick = 0,
   losses = 0;
 let timer = null;
 
+let bandwidth = 10;
+let queue = [];
+let inFlight = 0;
+
 const chart = new Chart(document.getElementById("chart"), {
   type: "line",
   data: {
@@ -46,10 +50,23 @@ const chart = new Chart(document.getElementById("chart"), {
 });
 
 function step() {
+  const delivered = [];
+
+  queue.forEach((pkt, index) => {
+    if (tick - pkt.sentAt >= 2) {
+      delivered.push(index);
+    }
+  });
+
+  for (let i = delivered.length - 1; i >= 0; i--) {
+    queue.splice(delivered[i], 1);
+    inFlight--;
+  }
   const rtt = +document.getElementById("rtt").value;
   const loss = +document.getElementById("loss").value / 100;
-
-  if (Math.random() < loss * 0.15) forceLoss();
+  if (inFlight > bandwidth * 2) {
+    forceLoss();
+  }
 
   tick++;
   const t = ((tick - t0) * rtt) / 1000;
@@ -58,6 +75,14 @@ function step() {
     phase = "Slow Start";
   } else if (phase === "Slow Start") {
     cwnd = Math.min(cwnd * 2, ssthresh);
+    let send = Math.max(0, Math.floor(cwnd - inFlight));
+    send = Math.min(send, bandwidth);
+
+    for (let i = 0; i < send; i++) {
+      queue.push({ sentAt: tick });
+    }
+    inFlight += send;
+
     if (cwnd >= ssthresh) phase = "Cubic";
   } else {
     cwnd = Math.max(1, Math.round(C * Math.pow(t - K, 3) + wMax));
@@ -75,6 +100,7 @@ function step() {
   document.getElementById("s-cwnd").textContent = cwnd;
   document.getElementById("s-phase").textContent = phase;
   document.getElementById("s-loss").textContent = losses;
+  document.getElementById("s-inflight").textContent = inFlight;
 }
 
 function forceLoss() {
