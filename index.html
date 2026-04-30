@@ -1,37 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>TCP CUBIC</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>TCP CUBIC</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>TCP CUBIC — Simulador</h1>
 
-  <h1>TCP CUBIC — Simulador</h1>
+    <div id="stats">
+      <div class="stat"><span id="s-cwnd">1</span><small>cwnd</small></div>
+      <div class="stat">
+        <span id="s-phase">Slow Start</span><small>fase</small>
+      </div>
+      <div class="stat"><span id="s-loss">0</span><small>pérdidas</small></div>
+    </div>
 
-  <div id="stats">
-    <div class="stat"><span id="s-cwnd">1</span><small>cwnd</small></div>
-    <div class="stat"><span id="s-phase">Slow Start</span><small>fase</small></div>
-    <div class="stat"><span id="s-loss">0</span><small>pérdidas</small></div>
-  </div>
+    <div id="controls">
+      <label
+        >RTT (ms)
+        <input type="range" id="rtt" min="10" max="500" value="100" step="10" />
+        <b id="rtt-v">100</b></label
+      >
+      <label
+        >Pérdida (%) <input type="range" id="loss" min="0" max="20" value="3" />
+        <b id="loss-v">3</b></label
+      >
+      <label
+        >Velocidad (ms)
+        <input
+          type="range"
+          id="speed"
+          min="100"
+          max="1000"
+          value="400"
+          step="100"
+        />
+        <b id="speed-v">400</b></label
+      >
+    </div>
 
-  <div id="controls">
-    <label>RTT (ms) <input type="range" id="rtt" min="10" max="500" value="100" step="10"> <b id="rtt-v">100</b></label>
-    <label>Pérdida (%) <input type="range" id="loss" min="0" max="20" value="3"> <b id="loss-v">3</b></label>
-    <label>Velocidad (ms) <input type="range" id="speed" min="100" max="1000" value="400" step="100"> <b id="speed-v">400</b></label>
-  </div>
+    <div id="buttons">
+      <button onclick="start()">Iniciar</button>
+      <button onclick="pause()">Pausar</button>
+      <button onclick="reset()">Reiniciar</button>
+      <button onclick="forceLoss()">Pérdida</button>
+    </div>
 
-  <div id="buttons">
-    <button onclick="start()">▶ Iniciar</button>
-    <button onclick="pause()">⏸ Pausar</button>
-    <button onclick="reset()">↺ Reiniciar</button>
-    <button onclick="forceLoss()">⚡ Pérdida</button>
-  </div>
+    <canvas id="chart"></canvas>
 
-  <canvas id="chart"></canvas>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-  <script src="cubic.js"></script>
-
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script src="cubic.js"></script>
+  </body>
 </html>
