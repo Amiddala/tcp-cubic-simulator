@@ -91,6 +91,8 @@ function step() {
   chart.data.labels.push(tick);
   chart.data.datasets[0].data.push(cwnd);
   chart.data.datasets[1].data.push(ssthresh);
+// Ventana deslizante: limita la gráfica a los últimos 80 ticks para que
+// los picos de pérdida (caídas de cwnd) no se aplanen visualmente
   if (chart.data.labels.length > 80) {
     chart.data.labels.shift();
     chart.data.datasets.forEach((d) => d.data.shift());
